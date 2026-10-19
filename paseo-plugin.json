@@ -1,0 +1,8 @@
+{
+  "id": "paseo-vscode-tunnel",
+  "media": [],
+  "requirements": {
+    "paseo": ">=0.12.0"
+  },
+  "name": "VS Code Tunnel"
+}
