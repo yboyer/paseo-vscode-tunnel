@@ -22,7 +22,7 @@
     "@tanstack/react-query": "^5.90.11",
     "@tsconfig/node24": "24.0.5",
     "@types/node": "24.19.2",
-    "@types/react": "~19.2.0",
+    "@types/react": "19.2.18",
     "@yboyer/config": "2.1.2",
     "react": "19.1.0",
     "react-native": "0.81.5",
