@@ -4,6 +4,8 @@ Open your current Paseo workspace or worktree in VS Code through an automaticall
 
 The plugin adds a **VS Code** button to Paseo. It resolves the workspace’s directory on the host, detects the connected tunnel, and opens that directory on the device you are using.
 
+![VS Code button in the Paseo workspace header](docs/images/vscode-button.png)
+
 ## Features
 
 - Open the exact workspace or Git worktree directory.
@@ -55,6 +57,8 @@ In Paseo, enable plugins under **Settings → Plugins** for the target daemon.
 1. Open a workspace in Paseo.
 2. Click **VS Code** in the workspace header on desktop. On Android, iOS, or a mobile browser, open an agent and use the **VS Code** button next to the message input.
 3. Allow VS Code to launch, or continue in vscode.dev if the browser fallback opens.
+
+![VS Code button next to the message input on mobile](docs/images/vscode-button-mobile.png)
 
 The link opens on the device where you click the button. To open desktop VS Code on your computer, use Paseo on that computer.
 
