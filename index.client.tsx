@@ -1,14 +1,13 @@
 import type { PluginButtonRegistration, PluginClientContext } from '@getpaseo/plugin/client'
 
-import { isMobileClient, openExternal, showError } from './client/web'
+import { openExternal, showError } from './client/web'
 import { openTunnelRpc } from './shared/tunnel'
 
-type Target = { id: string; workspaceId: string; agentId?: string }
+type Target = { id: string; workspaceId: string }
 type Registration = { workspaceId: string; button: PluginButtonRegistration; dispose(): void }
 
 export default function contribute(client: PluginClientContext) {
   const lifetime = new AbortController()
-  const mobile = isMobileClient()
   const releases: (() => Promise<void>)[] = []
   const buttons = new Map<string, Registration>()
 
@@ -58,18 +57,11 @@ export default function contribute(client: PluginClientContext) {
         },
       },
     }
-    button = target.agentId
-      ? client.addComposerPill({
-          id: 'open-vscode-tunnel',
-          workspaceId: target.workspaceId,
-          agentId: target.agentId,
-          button: descriptor,
-        })
-      : client.addHeaderButton({
-          id: 'open-vscode-tunnel',
-          workspaceId: target.workspaceId,
-          button: descriptor,
-        })
+    button = client.addHeaderButton({
+      id: 'open-vscode-tunnel',
+      workspaceId: target.workspaceId,
+      button: descriptor,
+    })
     buttons.set(target.id, {
       workspaceId: target.workspaceId,
       button,
@@ -82,60 +74,29 @@ export default function contribute(client: PluginClientContext) {
   }
 
   const observe = async () => {
-    if (mobile) {
-      const { subscription } = await client.paseo.agents.list({
-        subscribe: {},
-        signal: lifetime.signal,
-      })
-      if (lifetime.signal.aborted) {
-        await subscription.release()
-        return
-      }
-      releases.push(() => subscription.release())
-      const registerAgent = (agent: { id: string; workspaceId?: string | null }) => {
-        if (agent.workspaceId)
-          register({ id: agent.id, agentId: agent.id, workspaceId: agent.workspaceId })
-        else remove(agent.id)
-      }
-      subscription.subscribe({
-        snapshot: ({ entries }) => {
-          clear()
-          for (const { agent } of entries) registerAgent(agent)
-        },
-        update: message => {
-          if (message.type !== 'agent_update') return
-          const update = message.payload
-          if (update.kind === 'upsert') registerAgent(update.agent)
-          else remove(update.agentId)
-        },
-        error: error => console.error('[vscode-tunnel] Agent subscription failed', error),
-      })
-    } else {
-      const { subscription } = await client.paseo.workspaces.list({ subscribe: {} })
-      if (lifetime.signal.aborted) {
-        await subscription.release()
-        return
-      }
-      releases.push(() => subscription.release())
-      subscription.subscribe({
-        snapshot: ({ entries }) => {
-          clear()
-          for (const workspace of entries) register({ id: workspace.id, workspaceId: workspace.id })
-        },
-        update: message => {
-          if (message.type !== 'workspace_update') return
-          const update = message.payload
-          if (update.kind === 'upsert')
-            register({ id: update.workspace.id, workspaceId: update.workspace.id })
-          else remove(update.id)
-        },
-        error: error => console.error('[vscode-tunnel] Workspace subscription failed', error),
-      })
+    const { subscription } = await client.paseo.workspaces.list({ subscribe: {} })
+    if (lifetime.signal.aborted) {
+      await subscription.release()
+      return
     }
+    releases.push(() => subscription.release())
+    subscription.subscribe({
+      snapshot: ({ entries }) => {
+        clear()
+        for (const workspace of entries) register({ id: workspace.id, workspaceId: workspace.id })
+      },
+      update: message => {
+        if (message.type !== 'workspace_update') return
+        const update = message.payload
+        if (update.kind === 'upsert')
+          register({ id: update.workspace.id, workspaceId: update.workspace.id })
+        else remove(update.id)
+      },
+      error: error => console.error('[vscode-tunnel] Workspace subscription failed', error),
+    })
   }
   void observe().catch(error => {
-    if (!lifetime.signal.aborted)
-      console.error('[vscode-tunnel] Cannot observe workspaces or agents', error)
+    if (!lifetime.signal.aborted) console.error('[vscode-tunnel] Cannot observe workspaces', error)
   })
 
   return () => {

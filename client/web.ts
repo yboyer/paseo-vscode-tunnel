@@ -8,23 +8,11 @@ declare const window: {
   alert(message: string): void
   addEventListener(event: string, listener: () => void): void
   removeEventListener(event: string, listener: () => void): void
-  navigator: { userAgent: string; maxTouchPoints?: number }
 }
 declare const document: {
   hidden: boolean
   addEventListener(event: string, listener: () => void): void
   removeEventListener(event: string, listener: () => void): void
-}
-
-export function isMobileClient(): boolean {
-  return (
-    Platform.OS === 'android' ||
-    Platform.OS === 'ios' ||
-    (Platform.OS === 'web' &&
-      (/Android|iPhone|iPad|iPod/i.test(window.navigator.userAgent) ||
-        (/Macintosh/i.test(window.navigator.userAgent) &&
-          (window.navigator.maxTouchPoints ?? 0) > 1)))
-  )
 }
 
 export async function openExternal(url: string, webUrl: string): Promise<() => void> {
