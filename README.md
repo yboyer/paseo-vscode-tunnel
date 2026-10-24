@@ -11,7 +11,7 @@ The plugin adds a **VS Code** button to Paseo. It resolves the workspace’s dir
 - Open the exact workspace or Git worktree directory.
 - Detect the active tunnel with `code tunnel status`; no tunnel name to configure.
 - Open desktop VS Code in a new window, with a browser fallback to vscode.dev.
-- Access the button from the workspace header on desktop or the agent composer on mobile.
+- Access the button from the workspace header on desktop and mobile.
 - Handle spaces, Unicode, and reserved characters in directory paths.
 
 The plugin uses an existing tunnel. It does not start, configure, or modify tunnels. One tunnel serves the host; you do not need a separate tunnel for each worktree.
@@ -55,10 +55,8 @@ In Paseo, enable plugins under **Settings → Plugins** for the target daemon.
 ## Usage
 
 1. Open a workspace in Paseo.
-2. Click **VS Code** in the workspace header on desktop. On Android, iOS, or a mobile browser, open an agent and use the **VS Code** button next to the message input.
+2. Click **VS Code** in the workspace header on desktop, Android, iOS, or a mobile browser.
 3. Allow VS Code to launch, or continue in vscode.dev if the browser fallback opens.
-
-![VS Code button next to the message input on mobile](docs/images/vscode-button-mobile.png)
 
 The link opens on the device where you click the button. To open desktop VS Code on your computer, use Paseo on that computer.
 
@@ -86,13 +84,13 @@ Browsers cannot reliably report whether an external app launched. A confirmation
 
 ## Troubleshooting
 
-| Problem                              | What to check                                                                                      |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| The **VS Code** button is missing    | Enable plugins on the correct daemon. On mobile, open an agent and look next to the message input. |
-| The `code` command cannot be found   | Ensure it is available in the Paseo daemon’s `PATH`.                                               |
-| No connected tunnel is detected      | Run `code tunnel status` on the Paseo host and start or reconnect the tunnel.                      |
-| VS Code or vscode.dev cannot connect | Check that the tunnel is still connected and that you are signed in with the same account.         |
-| The desktop app does not open        | Allow `vscode://` links and ensure VS Code and Remote - Tunnels are installed.                     |
+| Problem                              | What to check                                                                              |
+| ------------------------------------ | ------------------------------------------------------------------------------------------ |
+| The **VS Code** button is missing    | Enable plugins on the correct daemon and look in the workspace header.                     |
+| The `code` command cannot be found   | Ensure it is available in the Paseo daemon’s `PATH`.                                       |
+| No connected tunnel is detected      | Run `code tunnel status` on the Paseo host and start or reconnect the tunnel.              |
+| VS Code or vscode.dev cannot connect | Check that the tunnel is still connected and that you are signed in with the same account. |
+| The desktop app does not open        | Allow `vscode://` links and ensure VS Code and Remote - Tunnels are installed.             |
 
 ## Development
 
