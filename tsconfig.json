@@ -1,11 +1,12 @@
 {
-  "extends": "@tsconfig/node24/tsconfig.json",
+  "extends": "@tsconfig/node26/tsconfig.json",
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "types": ["react", "node"],
     "jsx": "react-jsx",
-    "noEmit": true
+    "noEmit": true,
+    "strict": true
   },
   "include": ["**/*.ts", "**/*.tsx"]
 }
